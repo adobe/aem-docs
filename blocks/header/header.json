@@ -1,0 +1,9 @@
+{
+  "en": {
+    "nav": "Header",
+    "menuOpen": "Open navigation",
+    "menuClose": "Close navigation",
+    "api": "API",
+    "apiSelect": "Select API"
+  }
+}

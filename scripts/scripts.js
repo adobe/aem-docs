@@ -38,6 +38,28 @@ if (window.trustedTypes && window.trustedTypes.createPolicy) {
 }
 
 /**
+ * Loads localized labels from the JSON file colocated with a block or widget.
+ * @param {string} moduleUrl The block or widget module URL.
+ * @returns {Promise<Object>} The labels for the current page language.
+ */
+export async function loadLabels(moduleUrl) {
+  const url = new URL(moduleUrl);
+  url.pathname = url.pathname.replace(/\.js$/, '.json');
+
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`Failed to load labels: ${url}`);
+
+  const labels = await response.json();
+  const language = document.documentElement.lang || 'en';
+  const primaryLanguage = language.split('-')[0];
+
+  const localizedLabels = labels[language] || labels[primaryLanguage] || labels.en;
+  if (!localizedLabels) throw new Error(`No labels found for language: ${language}`);
+
+  return localizedLabels;
+}
+
+/**
  * load fonts.css and set a session storage flag
  */
 async function loadFonts() {
