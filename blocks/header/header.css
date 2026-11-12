@@ -101,7 +101,6 @@ body > header {
   white-space: nowrap;
 }
 
-/* the section label needs room to be legible; when shown, it truncates instead of overlapping */
 .header .header-identity p + p {
   display: none;
   min-width: 0;
