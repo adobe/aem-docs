@@ -65,6 +65,16 @@
   color-scheme: light;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* fallback fonts */
 @font-face {
   font-family: roboto-condensed-fallback;
