@@ -3,7 +3,7 @@ body > header {
   z-index: 1;
   box-sizing: border-box;
   height: var(--nav-height);
-  border-bottom: 1px solid #d5d5d5;
+  border-bottom: 1px solid var(--border-color);
   background: var(--background-color);
 }
 
@@ -123,7 +123,7 @@ body > header {
 
   .header .header-identity p + p {
     margin-inline-start: 16px;
-    border-inline-start: 1px solid #d5d5d5;
+    border-inline-start: 1px solid var(--border-color);
     padding-inline-start: 16px;
     font-weight: 600;
   }
@@ -179,7 +179,7 @@ body > header {
 
 .header .header-version summary:hover,
 .header .header-version summary:focus-visible {
-  background: var(--light-color);
+  background: var(--surface-color);
 }
 
 .header .header-version summary:focus-visible {
@@ -196,7 +196,7 @@ body > header {
   box-sizing: border-box;
   width: max-content;
   max-width: calc(100vw - 32px);
-  border: 1px solid #d5d5d5;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   padding: 6px;
   box-shadow: 0 4px 12px rgb(0 0 0 / 8%);
@@ -215,13 +215,13 @@ body > header {
 
 .header .header-version a:hover,
 .header .header-version a:focus-visible {
-  background: var(--light-color);
+  background: var(--surface-color);
   color: var(--text-color);
   text-decoration: none;
 }
 
 .header .header-version [aria-current="true"] {
-  background: var(--light-color);
+  background: var(--surface-color);
   font-weight: 600;
 }
 
@@ -241,7 +241,7 @@ body > header {
   position: absolute;
   top: 100%;
   inset-inline: 0;
-  border-bottom: 1px solid #d5d5d5;
+  border-bottom: 1px solid var(--border-color);
   padding: 16px;
   background: var(--background-color);
 }
@@ -256,7 +256,7 @@ body > header {
 }
 
 .header .header-nav a:any-link {
-  color: var(--dark-color);
+  color: var(--muted-text-color);
 }
 
 @media (width >= 900px) {

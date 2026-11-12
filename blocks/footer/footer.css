@@ -1,6 +1,6 @@
 body > footer {
-	border-top: 1px solid #d5d5d5;
-	background: var(--light-color);
+	border-top: 1px solid var(--border-color);
+	background: var(--surface-color);
 }
 
 .footer {
@@ -101,7 +101,7 @@ body > footer {
 
 /* copyright */
 .footer .footer-copyright {
-	color: var(--dark-color);
+	color: var(--muted-text-color);
 	font-size: 12px;
 }
 
@@ -124,7 +124,7 @@ body > footer {
 
 /* legal */
 .footer .footer-legal {
-	color: var(--dark-color);
+	color: var(--muted-text-color);
 	font-size: 12px;
 }
 
