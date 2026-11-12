@@ -12,12 +12,34 @@
 
 :root {
   /* colors */
-  --background-color: white;
-  --light-color: #f8f8f8;
-  --dark-color: #505050;
-  --text-color: #131313;
-  --link-color: #3b63fb;
-  --link-hover-color: #1d3ecf;
+  --background-color: light-dark(white, #16181d);
+  --surface-color: light-dark(#f8f8f8, #22262e);
+  --text-color: light-dark(#131313, #e6e8ed);
+  --muted-text-color: light-dark(#505050, #b0b7c3);
+  --link-color: light-dark(#3b63fb, #9bb8ff);
+  --link-hover-color: light-dark(#1d3ecf, #c3d3ff);
+  --border-color: light-dark(#d5d5d5, #657084);
+  --border-subtle-color: light-dark(#f8f8f8, #303640);
+  --emphasis-color: light-dark(#505050, #c2c8d2);
+  --text-on-emphasis-color: light-dark(#f8f8f8, #16181d);
+  --scrollbar-thumb-color: light-dark(#8c8c8c, #747e8d);
+  --success-color: light-dark(#176336, #80d6a0);
+  --error-color: light-dark(#b42318, #ff9b94);
+  --code-key-color: light-dark(#0550ae, #82b1ff);
+  --code-string-color: light-dark(#0a3069, #cfe3ff);
+  --code-literal-color: light-dark(#a62b13, #ffb49f);
+
+  /* HTTP method and status badges */
+  --badge-green-color: light-dark(#176336, #8fdcae);
+  --badge-green-background-color: light-dark(#e7f4ec, #173a28);
+  --badge-blue-color: light-dark(#2144a1, #b3c8ff);
+  --badge-blue-background-color: light-dark(#eaf0ff, #1e2f5c);
+  --badge-amber-color: light-dark(#77520b, #f5cf73);
+  --badge-amber-background-color: light-dark(#fff2d4, #3d2f0a);
+  --badge-orange-color: light-dark(#a33e00, #ffb78a);
+  --badge-orange-background-color: light-dark(#fff0e5, #4a2510);
+  --badge-red-color: light-dark(#a12626, #ffb0b0);
+  --badge-red-background-color: light-dark(#fbe9e9, #4d1c1f);
 
   /* fonts */
   --body-font-family: roboto, roboto-fallback, sans-serif;
@@ -38,6 +60,9 @@
 
   /* nav height */
   --nav-height: 64px;
+  --site-width: 1600px;
+
+  color-scheme: light;
 }
 
 /* fallback fonts */
@@ -137,7 +162,7 @@ pre {
 pre {
   padding: 16px;
   border-radius: 8px;
-  background-color: var(--light-color);
+  background-color: var(--surface-color);
   overflow-x: auto;
   white-space: pre;
 }
@@ -208,9 +233,9 @@ a.button.primary:hover,
 a.button.primary:focus-visible,
 button.button.primary:hover,
 button.button.primary:focus-visible {
-  border-color: var(--dark-color);
-  background-color: var(--dark-color);
-  color: var(--light-color);
+  border-color: var(--emphasis-color);
+  background-color: var(--emphasis-color);
+  color: var(--text-on-emphasis-color);
 }
 
 a.button.primary[aria-disabled="true"],
@@ -219,9 +244,9 @@ a.button.primary[aria-disabled="true"]:focus-visible,
 button.button.primary:disabled,
 button.button.primary:disabled:hover,
 button.button.primary:disabled:focus-visible {
-  background-color: var(--light-color);
-  border-color: var(--light-color);
-  color: var(--dark-color);
+  background-color: var(--surface-color);
+  border-color: var(--border-subtle-color);
+  color: var(--muted-text-color);
 }
 
 a.button.secondary,
@@ -235,9 +260,9 @@ a.button.secondary:hover,
 a.button.secondary:focus-visible,
 button.button.secondary:hover,
 button.button.secondary:focus-visible {
-  border-color: var(--dark-color);
-  background-color: var(--light-color);
-  color: var(--dark-color);
+  border-color: var(--emphasis-color);
+  background-color: var(--surface-color);
+  color: var(--emphasis-color);
 }
 
 a.button.secondary[aria-disabled="true"],
@@ -246,9 +271,9 @@ a.button.secondary[aria-disabled="true"]:focus-visible,
 button.button.secondary:disabled,
 button.button.secondary:disabled:hover,
 button.button.secondary:disabled:focus-visible {
-  background-color: var(--light-color);
-  border-color: var(--light-color);
-  color: var(--dark-color);
+  background-color: var(--surface-color);
+  border-color: var(--border-subtle-color);
+  color: var(--muted-text-color);
 }
 
 /* high-impact call-to-action */
@@ -273,9 +298,9 @@ a.button.accent[aria-disabled="true"]:focus-visible,
 button.button.accent:disabled,
 button.button.accent:disabled:hover,
 button.button.accent:disabled:focus-visible {
-  background-color: var(--light-color);
-  border-color: var(--light-color);
-  color: var(--dark-color);
+  background-color: var(--surface-color);
+  border-color: var(--border-subtle-color);
+  color: var(--muted-text-color);
 }
 
 main img {
@@ -319,7 +344,7 @@ main > .section:first-of-type {
 /* section metadata */
 main .section.light,
 main .section.highlight {
-  background-color: var(--light-color);
+  background-color: var(--surface-color);
   margin: 0;
   padding: 40px 0;
 }
