@@ -326,7 +326,7 @@ main img {
   width: 100%;
 }
 
-/* icon buttons: quiet icon-only controls; hover and keyboard focus share one state */
+/* icon buttons: quiet icon-only controls */
 .icon-button {
   display: inline-flex;
   align-items: center;
@@ -366,7 +366,6 @@ main img {
   visibility: hidden;
 }
 
-/* copy feedback: the icon changes; the status message announces the same result */
 .copy-button[data-copy-state='copied'] {
   color: var(--success-color);
 }
