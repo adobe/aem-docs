@@ -7,8 +7,7 @@ const prism = import('../../deps/prismjs/prism-core.min.js');
 const components = {};
 
 /**
- * Builds the dialog heading from the inline title, keeping its badges and media type
- * but not its link, which would navigate the page behind the modal.
+ * Builds the dialog heading from the inline title, keeping its badges and media type.
  * @param {HTMLElement|null} titleElement The generated inline sample title.
  * @param {string} title The plain sample title, used when no title element exists.
  * @returns {HTMLHeadingElement} The heading.
