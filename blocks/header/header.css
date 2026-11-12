@@ -67,6 +67,8 @@ body > header {
 /* identity */
 .header .header-identity {
   flex: 1;
+  flex-basis: auto;
+  min-width: 0;
 }
 
 .header .header-identity > div {
@@ -99,7 +101,24 @@ body > header {
   white-space: nowrap;
 }
 
+.header .header-identity p + p {
+  display: none;
+  min-width: 0;
+}
+
 @media (width >= 600px) {
+  .header .header-identity p + p {
+    display: block;
+  }
+}
+
+.header .header-identity p + p a {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (width >= 900px) {
   .header .header-identity {
     flex: unset;
   }
@@ -132,6 +151,8 @@ body > header {
 /* version */
 .header .header-version {
   flex: 1;
+  flex-basis: auto;
+  flex-shrink: 0;
   min-width: 0;
   font-size: 14px;
 }
@@ -165,16 +186,13 @@ body > header {
   height: 6px;
   width: 6px;
   margin-right: 0.5ch;
-  margin-bottom: 0.5ch;
   border-right: 1.5px solid currentcolor;
   border-bottom: 1.5px solid currentcolor;
-  transform: rotate(45deg);
+  transform: translateY(-0.25ch) rotate(45deg);
 }
 
 .header .header-version [open] summary::after {
-  margin-top: 0.5ch;
-  margin-bottom: 0;
-  transform: rotate(225deg);
+  transform: translateY(0.25ch) rotate(225deg);
 }
 
 .header .header-version summary:hover,
@@ -204,6 +222,7 @@ body > header {
   list-style: none;
 }
 
+/* stylelint-disable-next-line no-descending-specificity */
 .header .header-version a {
   display: flex;
   box-sizing: border-box;
@@ -293,24 +312,22 @@ body > header {
   text-underline-offset: 3px;
 }
 
-.header .header-menu:focus-visible {
-  outline: 2px solid var(--text-color);
-  outline-offset: 2px;
-}
-
-.header .header-menu:hover .icon,
-.header .header-menu:focus-visible .icon {
+.header .header-menu .icon {
   background: currentcolor;
   mask: url('/icons/menu.svg') center / contain no-repeat;
 }
 
 .header .header-menu[aria-expanded="true"] .icon {
-  background: currentcolor;
-  mask: url('/icons/close.svg') center / contain no-repeat;
+  mask-image: url('/icons/close.svg');
 }
 
-.header .header-menu:where(:hover, :focus-visible, [aria-expanded="true"]) img {
+.header .header-menu img {
   visibility: hidden;
+}
+
+.header .header-menu:focus-visible {
+  outline: 2px solid var(--text-color);
+  outline-offset: 2px;
 }
 
 @media (width >= 900px) {
