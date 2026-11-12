@@ -7,10 +7,6 @@
   transition: border-color 0.2s;
 }
 
-/*
- * header: shared by the inline sample and its expanded dialog. The method badge, linked
- * name and status sit on the first line; the media type gets its own muted line.
- */
 .code-sample .code-sample-head {
   display: flex;
   align-items: flex-start;
@@ -22,7 +18,6 @@
   transition: border-bottom-color 0.2s, background-color 0.2s;
 }
 
-/* the dialog heading is an h2, so this outranks generic heading styles */
 .code-sample .code-sample-head .code-sample-title {
   display: flex;
   flex-wrap: wrap;
@@ -99,7 +94,6 @@
   background: var(--emphasis-color);
 }
 
-/* the sample is a focusable scroll region */
 .code-sample pre:focus-visible {
   outline: 2px solid var(--text-color);
   outline-offset: -2px;
@@ -111,7 +105,6 @@
   white-space: pre;
 }
 
-/* controls: the shared icon buttons from styles.css */
 .code-sample .code-sample-controls {
   display: flex;
   flex: none;
@@ -127,7 +120,6 @@
   mask-image: url('/icons/close.svg');
 }
 
-/* expanded view: a modal dialog with the page behind it locked */
 html[data-code-sample='expanded'] {
   overflow: hidden;
 }
@@ -156,7 +148,6 @@ html[data-code-sample='expanded'] {
   background: rgb(0 0 0 / 50%);
 }
 
-/* the expanded sample scrolls in both directions */
 .code-sample .code-sample-dialog pre {
   flex: 1;
   min-height: 0;
