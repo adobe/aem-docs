@@ -1,8 +1,7 @@
 import { decorateIcons } from '../aem.js';
 
 /**
- * Builds an icon-only button whose tooltip is its short action and whose accessible
- * name also identifies its subject.
+ * Builds an icon-only button whose tooltip is its short action.
  * @param {string} className The button's own class, which also selects its icon in CSS.
  * @param {string} icon The name of the decorative icon in /icons.
  * @param {string} action The short localized action, shown as the tooltip.
