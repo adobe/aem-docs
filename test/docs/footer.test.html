@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="header" content="/test-header">
+    <meta name="footer" content="/test-footer">
+    <title>Footer semantic tests</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+  </head>
+  <body>
+    <header></header>
+    <main>
+      <div>
+        <h1>Footer semantic tests</h1>
+        <pre id="results" role="status">Running...</pre>
+      </div>
+    </main>
+    <footer></footer>
+    <script type="module">
+      import {
+        assert, originalFetch, run, stubFetch,
+      } from '/test/harness.js';
+
+      let copyright = '<p data-authored="copy">&copy; 2026 Example. <strong>All rights reserved.</strong>  Keep this spacing.</p>';
+      let fixture = `
+        <div data-authored="identity">
+          <p><a href="https://www.aem.live/">Adobe Experience Manager</a></p>
+          <p><a href="/docs">API Reference</a></p>
+        </div>
+        <div data-authored="copyright">${copyright}</div>
+        <div data-authored="legal">
+          <ul>
+            <li><a href="/privacy">Privacy</a></li>
+            <li><a href="/terms">Terms of Use</a></li>
+            <li><a href="/choices">Do not sell my personal information</a></li>
+          </ul>
+        </div>`;
+      let localizedLabels;
+      stubFetch((url) => {
+        if (url.pathname === '/test-footer.plain.html') {
+          return Promise.resolve(new Response(fixture));
+        }
+        // the page lifecycle also loads the header; give it a minimal fragment
+        if (url.pathname === '/test-header.plain.html') {
+          return Promise.resolve(new Response('<div><p><a href="/">Site</a></p></div>'));
+        }
+        if (url.pathname === '/blocks/footer/footer.json' && localizedLabels) {
+          return Promise.resolve(new Response(JSON.stringify(localizedLabels)));
+        }
+      });
+
+      function check(footer, labels) {
+        const source = new DOMParser().parseFromString(fixture, 'text/html');
+        const block = footer.querySelector('.footer.block');
+        const sections = [...block.children];
+        assert(footer.tagName === 'FOOTER', 'The native footer is retained');
+        assert(sections.length === 3, 'All three authored sections remain');
+        ['identity', 'copyright', 'legal'].forEach((name, index) => {
+          assert(sections[index].matches(`div.section.footer-${name}`)
+            && sections[index].dataset.authored === source.body.children[index].dataset.authored,
+          'Authored section elements, attributes and order are preserved');
+        });
+        const links = [...block.querySelectorAll('a')];
+        const expectedLinks = [...source.querySelectorAll('a')];
+        assert(JSON.stringify(links.map((link) => [link.textContent, link.getAttribute('href'), link.id]))
+          === JSON.stringify(expectedLinks.map((link) => [link.textContent, link.getAttribute('href'), link.id])),
+        'All authored link text, destinations, IDs and order are preserved');
+        const paragraphs = [...sections[0].querySelectorAll('p')];
+        assert(paragraphs.length === 2
+          && paragraphs.every((paragraph) => paragraph.children.length === 1
+            && paragraph.firstElementChild.matches('a')),
+        'Identity links remain inside their authored paragraphs');
+        const brand = links[0];
+        assert(brand.innerHTML === expectedLinks[0].innerHTML
+          && !brand.hasAttribute('aria-label'),
+        'The authored brand content remains unchanged');
+        assert(!block.querySelector('img'), 'No footer logo is added');
+        const navigation = [...block.querySelectorAll('nav')];
+        assert(navigation.length === 1, 'Only the legal navigation landmark remains');
+        const nav = navigation[0];
+        assert(nav.parentElement === sections[2] && nav.matches('nav.default-content-wrapper')
+          && nav.children.length === 1 && nav.firstElementChild.matches('ul'),
+        'Legal navigation preserves the section, content wrapper and authored list');
+        assert(nav.getAttribute('aria-label') === labels.legal,
+          'Legal navigation uses its localized purpose label');
+        assert(!block.querySelector('.footer-nav') && Object.keys(labels).join() === 'legal',
+          'No replacement navigation section or obsolete label remains');
+        const expectedCopyright = new DOMParser().parseFromString(copyright, 'text/html').body.innerHTML;
+        assert(sections[1].querySelector('.default-content-wrapper').innerHTML === expectedCopyright,
+          'Authored copyright text, spacing and inline markup remain exactly unchanged');
+        assert(!sections[0].querySelector('nav') && !sections[1].querySelector('nav'),
+          'Identity and copyright do not become navigation landmarks');
+        assert(!block.querySelector('button, details, [role], [aria-controls], [aria-expanded], [tabindex]'),
+          'Semantic decoration introduces no controls, redundant roles or interaction state');
+        assert(block.querySelectorAll('[id]').length === source.querySelectorAll('[id]').length,
+          'No structural IDs are introduced');
+      }
+
+      await run(async () => {
+        const { loadFooter } = await import('../../scripts/aem.js');
+        const loaded = new Promise((resolve, reject) => {
+          let timeout;
+          const observer = new MutationObserver(() => {
+            if (document.querySelector('footer .footer[data-block-status="loaded"]')) {
+              observer.disconnect();
+              clearTimeout(timeout);
+              resolve();
+            }
+          });
+          timeout = setTimeout(() => {
+            observer.disconnect();
+            reject(Error('The normal footer-loading lifecycle did not complete'));
+          }, 5000);
+          observer.observe(document.querySelector('footer'), {
+            childList: true, subtree: true, attributes: true,
+          });
+        });
+        await import('../../scripts/scripts.js');
+        await loaded;
+        const labels = await (await originalFetch('/blocks/footer/footer.json')).json();
+        check(document.querySelector('footer'), labels.en);
+
+        document.documentElement.lang = 'fr-CA';
+        localizedLabels = {
+          en: { legal: 'Legal' },
+          fr: { legal: 'Mentions legales' },
+        };
+        copyright = '<p data-authored="copy">Texte juridique <em>fourni par les auteurs</em>.  Ne pas modifier.</p>';
+        fixture = `
+          <div data-authored="identity">
+            <p><a id="authored-footer-brand" href="/accueil">Identite du site</a></p>
+            <p><a href="/references">References API</a></p>
+          </div>
+          <div data-authored="copyright">${copyright}</div>
+          <div data-authored="legal">
+            <ul>
+              <li><a href="/confidentialite">Confidentialite</a></li>
+              <li><a href="/conditions">Conditions</a></li>
+              <li><a href="/preferences">Preferences de confidentialite</a></li>
+            </ul>
+          </div>`;
+        const footer = document.createElement('footer');
+        await loadFooter(footer);
+        check(footer, localizedLabels.fr);
+        return [
+          'normal footer lifecycle and three preserved authored sections',
+          'unchanged identity without a logo, localized legal navigation only',
+          'unchanged copyright markup, authored IDs/links and language fallback',
+        ];
+      }, () => {
+        document.documentElement.lang = 'en';
+      });
+    </script>
+  </body>
+</html>
