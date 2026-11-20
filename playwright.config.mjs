@@ -9,7 +9,7 @@ export default defineConfig({
   use: {
     baseURL: `http://127.0.0.1:${port}`,
     browserName: 'chromium',
-    channel: process.env.CI ? undefined : 'chrome',
+    channel: 'chrome',
   },
   webServer: {
     command: 'node scripts/docs/preview-api.mjs',
