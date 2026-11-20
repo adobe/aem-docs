@@ -7,6 +7,8 @@ helix-importer-ui
 .DS_Store
 *.bak
 .idea
+test-results/
+playwright-report/
 AGENTS.local.md
 
 # Ensure these files are tracked

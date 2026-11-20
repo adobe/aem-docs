@@ -2,7 +2,6 @@ body > header {
   position: relative;
   z-index: 1;
   box-sizing: border-box;
-  height: var(--nav-height);
   border-bottom: 1px solid var(--border-color);
   background: var(--background-color);
 }
@@ -12,11 +11,11 @@ body > header {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 8px;
+  gap: var(--spacing-s);
   margin: auto;
   max-width: var(--site-width);
-  padding-inline: 16px;
-  font-size: 16px;
+  padding-inline: var(--spacing-l);
+  font-size: var(--body-font-size-m);
   line-height: 1.5;
 }
 
@@ -29,7 +28,7 @@ body > header {
   display: inline-flex;
   align-items: center;
   border-radius: 4px;
-  padding-block: 8px;
+  padding-block: var(--spacing-s);
   color: var(--text-color);
   text-decoration: none;
   cursor: pointer;
@@ -37,30 +36,24 @@ body > header {
 
 .header a:hover,
 .header a:focus-visible {
-  color: var(--link-color);
+  color: var(--link-hover-color);
   text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.header a:focus-visible {
-  outline: 2px solid var(--text-color);
-  outline-offset: 2px;
 }
 
 @media (width >= 900px) {
   .header {
     justify-content: space-between;
-    gap: 32px;
-    padding-inline: 32px;
+    gap: var(--spacing-2xl);
+    padding-inline: var(--spacing-2xl);
   }
 
   .header ul {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: var(--spacing-xl);
     padding: 0;
     list-style: none;
-    font-size: 14px;
+    font-size: var(--body-font-size-s);
   }
 }
 
@@ -74,11 +67,11 @@ body > header {
 .header .header-identity > div {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--spacing-l);
 }
 
 .header .header-identity a {
-  gap: 8px;
+  gap: var(--spacing-s);
 }
 
 .header .header-identity img {
@@ -143,7 +136,7 @@ body > header {
   .header .header-identity p + p {
     margin-inline-start: 16px;
     border-inline-start: 1px solid var(--border-color);
-    padding-inline-start: 16px;
+    padding-inline-start: var(--spacing-l);
     font-weight: 600;
   }
 }
@@ -154,7 +147,7 @@ body > header {
   flex-basis: auto;
   flex-shrink: 0;
   min-width: 0;
-  font-size: 14px;
+  font-size: var(--body-font-size-s);
 }
 
 .header .header-version details {
@@ -169,11 +162,12 @@ body > header {
   gap: 6px;
   box-sizing: border-box;
   border-radius: 4px;
-  padding: 4px 6px;
+  padding: var(--spacing-xs) 6px;
   color: var(--text-color);
   list-style: none;
   overflow-wrap: anywhere;
   cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 .header .header-version summary::-webkit-details-marker {
@@ -189,6 +183,7 @@ body > header {
   border-right: 1.5px solid currentcolor;
   border-bottom: 1.5px solid currentcolor;
   transform: translateY(-0.25ch) rotate(45deg);
+  transition: transform 0.2s;
 }
 
 .header .header-version [open] summary::after {
@@ -200,15 +195,10 @@ body > header {
   background: var(--surface-color);
 }
 
-.header .header-version summary:focus-visible {
-  outline: 2px solid var(--text-color);
-  outline-offset: 2px;
-}
-
 .header .header-version ul {
   display: block;
   position: absolute;
-  top: calc(100% + 4px);
+  top: calc(100% + var(--spacing-xs));
   inset-inline-end: 0;
   z-index: 1;
   box-sizing: border-box;
@@ -227,9 +217,10 @@ body > header {
   display: flex;
   box-sizing: border-box;
   width: 100%;
-  padding: 6px 8px;
+  padding: 6px var(--spacing-s);
   line-height: 1.4;
   overflow-wrap: anywhere;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 .header .header-version a:hover,
@@ -261,7 +252,7 @@ body > header {
   top: 100%;
   inset-inline: 0;
   border-bottom: 1px solid var(--border-color);
-  padding: 16px;
+  padding: var(--spacing-l);
   background: var(--background-color);
 }
 
@@ -287,6 +278,11 @@ body > header {
   }
 }
 
+.header .icon-button:hover,
+.header .icon-button:focus-visible {
+  background: var(--surface-color);
+}
+
 /* menu */
 .header .header-menu {
   display: inline-flex;
@@ -299,35 +295,20 @@ body > header {
   margin: 0;
   border: 0;
   border-radius: 4px;
-  padding: 8px;
+  padding: var(--spacing-s);
   background: transparent;
   color: var(--text-color);
   cursor: pointer;
 }
 
-.header .header-menu:hover,
-.header .header-menu:focus-visible {
-  color: var(--link-color);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.header .header-menu .icon {
-  background: currentcolor;
-  mask: url('/icons/menu.svg') center / contain no-repeat;
+.header button.header-menu .icon {
+  height: 24px;
+  width: 24px;
+  mask-image: url('/icons/menu.svg');
 }
 
 .header .header-menu[aria-expanded="true"] .icon {
   mask-image: url('/icons/close.svg');
-}
-
-.header .header-menu img {
-  visibility: hidden;
-}
-
-.header .header-menu:focus-visible {
-  outline: 2px solid var(--text-color);
-  outline-offset: 2px;
 }
 
 @media (width >= 900px) {

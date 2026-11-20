@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="header" content="/test-header">
+    <meta name="footer" content="/test-footer">
+    <title>Localized label tests</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+  </head>
+  <body>
+    <header></header>
+    <main>
+      <div>
+        <h1>Localized label tests</h1>
+        <pre id="results" role="status">Running...</pre>
+      </div>
+    </main>
+    <footer></footer>
+    <script type="module">
+      import {
+        assert, run, stubFetch,
+      } from '/test/harness.js';
+
+      // loadLabels resolves a module URL to the JSON beside it, as blocks pass import.meta.url
+      const moduleUrl = new URL('./labels.js', window.location.href).href;
+      const resource = new URL('./labels.json', window.location.href);
+      let data = {
+        en: { nav: 'Global', close: ' Close ' },
+        fr: { nav: 'General' },
+        'fr-CA': { nav: 'Canadian' },
+      };
+      let mode = 'ok';
+      let requests = [];
+      stubFetch((url) => {
+        if (url.pathname === resource.pathname) {
+          requests.push(url.href);
+          if (mode === 'http') return Promise.resolve(new Response('', { status: 404 }));
+          return Promise.resolve(new Response(JSON.stringify(data)));
+        }
+        if (url.pathname === '/test-header.plain.html') {
+          return Promise.resolve(new Response(
+            '<div><p><a href="/">Site</a></p><p><a href="/docs">API</a></p></div>'
+            + '<div><ul><li><a href="/docs/">Docs</a></li></ul></div>',
+          ));
+        }
+        if (url.pathname === '/test-footer.plain.html') {
+          return Promise.resolve(new Response('<div></div>'));
+        }
+      });
+
+      await run(async () => {
+        const { loadLabels } = await import('../../scripts/scripts.js');
+        let checks = 0;
+        const expect = async (language, value, message) => {
+          document.documentElement.lang = language;
+          const labels = await loadLabels(moduleUrl);
+          assert(labels.nav === value, `${message}: got ${labels.nav} for "${language}"`);
+          checks += 1;
+        };
+        const rejects = async (pattern, message) => {
+          try {
+            await loadLabels(moduleUrl);
+          } catch (error) {
+            assert(pattern.test(error.message), `${message}: ${error.message}`);
+            checks += 1;
+            return;
+          }
+          throw Error(`Expected rejection: ${message}`);
+        };
+
+        requests = [];
+        await expect('fr', 'General', 'Uses the page language');
+        assert(requests.length === 1 && requests[0] === resource.href,
+          'Requests the JSON file beside the module, once');
+        await expect('fr-CA', 'Canadian', 'Prefers an exact language match');
+        await expect('fr-FR', 'General', 'Falls back to the primary language');
+        await expect('de-DE', 'Global', 'Falls back to English');
+        await expect('', 'Global', 'Uses English when the page has no language');
+        document.documentElement.lang = 'en';
+        const english = await loadLabels(moduleUrl);
+        assert(english.close === ' Close ' && Object.keys(english).join() === 'nav,close',
+          'Returns the language\'s labels unchanged');
+        checks += 1;
+        requests = [];
+        await loadLabels(resource.href);
+        assert(requests[0] === resource.href, 'A JSON URL is requested as given');
+        checks += 1;
+
+        data = { fr: { nav: 'General' } };
+        document.documentElement.lang = 'de-DE';
+        await rejects(/No labels found for language: de-DE/, 'Rejects when no language or English labels exist');
+        data = { en: { nav: 'Global' } };
+        mode = 'http';
+        await rejects(/Failed to load labels: .*labels\.json/, 'Rejects a failed request, naming the file');
+        mode = 'ok';
+
+        document.documentElement.lang = 'en';
+        await new Promise((resolve, reject) => {
+          let timeout;
+          const complete = () => document.querySelectorAll(
+            'header > [data-block-status="loaded"], footer > [data-block-status="loaded"]',
+          ).length === 2;
+          const observer = new MutationObserver(() => {
+            if (complete()) {
+              observer.disconnect();
+              clearTimeout(timeout);
+              resolve();
+            }
+          });
+          if (complete()) {
+            resolve();
+            return;
+          }
+          observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+          timeout = setTimeout(() => {
+            observer.disconnect();
+            reject(Error('Page lifecycle did not complete'));
+          }, 5000);
+        });
+        return `${checks} loading, localization and fallback checks`;
+      }, () => {
+        document.documentElement.lang = 'en';
+      });
+    </script>
+  </body>
+</html>

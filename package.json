@@ -10,7 +10,8 @@
     "lint:css": "stylelint \"blocks/**/*.css\" \"styles/*.css\"",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:fix": "npm run lint:js -- --fix && npm run lint:css -- --fix",
-    "test": "node --test test/docs/*.test.mjs"
+    "test": "node --test test/docs/*.test.mjs",
+    "test:browser": "playwright test"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
   "homepage": "https://github.com/adobe/aem-docs#readme",
   "devDependencies": {
     "@babel/eslint-parser": "7.29.13",
+    "@playwright/test": "1.64.1",
     "eslint": "8.57.1",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-plugin-import": "2.32.0",

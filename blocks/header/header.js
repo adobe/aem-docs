@@ -37,7 +37,7 @@ function decorateNav(section, labels) {
   [...wrapper.attributes].forEach(({ name, value }) => nav.setAttribute(name, value));
   nav.append(...wrapper.childNodes);
   wrapper.replaceWith(nav);
-  nav.setAttribute('aria-label', labels.nav || 'Global');
+  nav.setAttribute('aria-label', labels.nav);
   return section;
 }
 
@@ -98,7 +98,7 @@ function decorateVersion(section, labels) {
 function buildMenu(block, labels, identity, navigation) {
   const menu = document.createElement('button');
   menu.type = 'button';
-  menu.className = 'header-menu';
+  menu.className = 'icon-button header-menu';
   menu.setAttribute('aria-label', labels.menuOpen);
   const icon = document.createElement('span');
   icon.className = 'icon icon-menu';

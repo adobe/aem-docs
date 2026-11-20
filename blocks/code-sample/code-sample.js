@@ -1,6 +1,4 @@
-import { loadLabels } from '../../scripts/scripts.js';
-import { buildCopyButton, buildIconButton } from '../../scripts/utils/copy-button.js';
-import observe from '../../scripts/utils/intOb.js';
+import { buildCopyButton, buildIconButton, loadLabels } from '../../scripts/scripts.js';
 
 window.Prism = { manual: true };
 const prism = import('../../deps/prismjs/prism-core.min.js');
@@ -14,7 +12,7 @@ const components = {};
  */
 function buildHeading(titleElement, title) {
   const heading = document.createElement('h2');
-  heading.className = 'code-sample-title';
+  heading.className = 'title';
   if (!titleElement) {
     heading.textContent = title;
     return heading;
@@ -36,15 +34,14 @@ function buildHeading(titleElement, title) {
  */
 function buildDialog(code, pre, labels, titleElement, title) {
   const dialog = document.createElement('dialog');
-  dialog.className = 'code-sample-dialog';
   if (title) dialog.setAttribute('aria-label', title);
 
   const head = document.createElement('div');
-  head.className = 'code-sample-head';
+  head.className = 'head';
   const heading = buildHeading(titleElement, title);
   const controls = document.createElement('div');
-  controls.className = 'code-sample-controls';
-  const close = buildIconButton('close-code-btn', 'close', labels.close, title);
+  controls.className = 'controls';
+  const close = buildIconButton('close', 'close', labels.close, title);
   close.addEventListener('click', () => dialog.close());
   controls.append(...buildCopyButton(code.textContent, labels, title), close);
   head.append(heading, controls);
@@ -74,9 +71,9 @@ function buildDialog(code, pre, labels, titleElement, title) {
  * @param {Object} labels The localized code-sample labels.
  */
 function addControls(block, pre, code, labels) {
-  const titleElement = block.querySelector('.code-sample-head > .code-sample-title');
+  const titleElement = block.querySelector('.head > .title');
   const title = titleElement ? titleElement.textContent.replace(/\s+/g, ' ').trim() : '';
-  const expand = buildIconButton('expand-code-btn', 'expand', labels.expand, title);
+  const expand = buildIconButton('expand', 'expand', labels.expand, title);
   let dialog;
   expand.addEventListener('click', () => {
     if (!dialog) {
@@ -87,9 +84,9 @@ function addControls(block, pre, code, labels) {
     dialog.showModal();
   });
   const controls = document.createElement('div');
-  controls.className = 'code-sample-controls';
+  controls.className = 'controls';
   controls.append(...buildCopyButton(code.textContent, labels, title), expand);
-  (block.querySelector('.code-sample-head') || block).append(controls);
+  (block.querySelector('.head') || block).append(controls);
 }
 
 /**
@@ -110,9 +107,17 @@ async function highlight(block) {
   await components[language];
   window.Prism.highlightElement(code);
   addControls(block, pre, code, labels);
-  block.classList.add('is-highlighted');
+  block.dataset.highlighted = 'true';
 }
 
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (!entry.isIntersecting) return;
+    observer.unobserve(entry.target);
+    highlight(entry.target);
+  });
+});
+
 export default function decorate(block) {
-  observe(block, highlight);
+  observer.observe(block);
 }
